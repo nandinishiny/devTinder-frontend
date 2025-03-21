@@ -7,8 +7,7 @@ const Login = () => {
     const [password, setPassword] = useState();
     const handleLoginHook = async()=>{
         try {
-            const res = await axios.post(`${server_url}/login`,{email,password})
-            console.log(res)
+            const res = await axios.post(`${server_url}/login`,{email,password},{withCredentials: true})
             
         } catch (error) {
             console.log(error)    
