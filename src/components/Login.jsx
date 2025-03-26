@@ -1,16 +1,24 @@
 import axios from 'axios';
 import React, { useState } from 'react'
 import { server_url } from '../utils/constant.js';
+import { useDispatch } from 'react-redux';
+import { addUser } from '../../redux/userSlice.js';
+import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
-    const [email,setEmail] = useState();
-    const [password, setPassword] = useState();
+    const [email,setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const [error,setError] = useState("");
     const handleLoginHook = async()=>{
         try {
-            const res = await axios.post(`${server_url}/login`,{email,password})
-            console.log(res)
+            const res = await axios.post(`${server_url}/login`,{email,password},{withCredentials:true});
+            dispatch(addUser(res?.data?.user));
+            return navigate("/");
             
         } catch (error) {
+            setError(error?.response?.data?.message);
             console.log(error)    
         }
     }
@@ -21,6 +29,7 @@ const Login = () => {
             <input type="email" placeholder="Email Id" className="input input-secondary" value={email} onChange={(e) => setEmail(e.target.value)}/>
             <input type="text" placeholder="Password" className="input input-accent" value={password}
             onChange={(e)=>setPassword(e.target.value)} />
+            {error && <p className='text-red-500'> {error} !!!</p>}
             <button className="btn btn-primary" onClick={()=>handleLoginHook()}>Login</button>
         </div>
 
@@ -29,3 +38,8 @@ const Login = () => {
 }
 
 export default Login
+
+
+
+// "email": "nandinid@gmail.com",
+    // "password": "Swarn1@11"
